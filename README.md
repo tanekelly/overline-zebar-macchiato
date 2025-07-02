@@ -28,15 +28,6 @@ A fork of overline-zebar with a macchiato theme
 
 ## Installation
 
-**For releases older than Zebar v3, refer to [this branch](https://github.com/mushfikurr/overline-zebar/tree/old/zebar-v2).**
-
-Note: If you have local branches from the older branch, the layout has changed:
-
-```
-main -> old/zebar-v2  
-migrate/zebar-v3 -> main
-```
-
 ### Option 1: The Zebar Marketplace
 
 1. Right-click the Zebar tray icon, and click **Browse Widgets**  
