@@ -37,13 +37,13 @@
           "anchor": "top_left",
           "offsetX": "5px",
           "offsetY": "4px",
-          "width": "1910px",
+          "width": "100%",
           "height": "36px",
           "monitorSelection": {
             "type": "all"
           },
           "dockToEdge": {
-            "enabled": false,
+            "enabled": true,
             "edge": null,
             "windowMargin": "0px"
           }
