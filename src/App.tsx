@@ -13,9 +13,10 @@ import "./styles/fonts.css";
 import { useAutoTiling } from "./utils/useAutoTiling";
 import { getWeatherIcon } from "./utils/weatherIcons";
 import Systray from "./components/systray";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Pause } from "lucide-react";
 import { cn } from "./utils/cn";
 import { Button } from "./components/common/Button";
+import { motion, AnimatePresence } from "framer-motion";
 
 const providers = zebar.createProviderGroup({
   media: { type: "media" },
@@ -39,6 +40,22 @@ function App() {
   useAutoTiling();
 
   const statIconClassnames = "h-3 w-3 text-icon";
+
+  // Check if glazewm is paused using the isPaused property
+  const isGlazewmPaused = output.glazewm?.isPaused ?? false;
+
+  // Debug logging to see what binding modes are available
+  if (output.glazewm) {
+    console.log("Current binding modes:", output.glazewm.bindingModes.map(mode => ({
+      name: mode.name,
+      displayName: mode.displayName
+    })));
+    console.log("Is glazewm paused:", isGlazewmPaused);
+    
+    // Log all available glazewm properties for debugging
+    console.log("All glazewm properties:", Object.keys(output.glazewm));
+    console.log("Full glazewm output:", output.glazewm);
+  }
 
   return (
     <div className="relative flex justify-between items-center bg-background/80 border border-button-border/80 backdrop-blur-3xl text-text h-full antialiased select-none font-mono py-1.5">
@@ -64,13 +81,38 @@ function App() {
         <div className="flex items-center h-full">
           {output.glazewm && (
             <Button onClick={() => output.glazewm?.runCommand("toggle-tiling-direction")}>
-              <ChevronRight
-                className={cn(
-                  "h-3 w-3 transition-transform duration-200 ease-in-out",
-                  output.glazewm.tilingDirection === "vertical" ? "rotate-90" : ""
+              <AnimatePresence mode="popLayout">
+                {isGlazewmPaused ? (
+                  <motion.div
+                    key="pause"
+                    initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <Pause
+                      className="h-3 w-3 transition-transform duration-200 ease-in-out"
+                      strokeWidth={3}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="chevron"
+                    initial={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <ChevronRight
+                      className={cn(
+                        "h-3 w-3 transition-transform duration-200 ease-in-out",
+                        output.glazewm.tilingDirection === "vertical" ? "rotate-90" : ""
+                      )}
+                      strokeWidth={3}
+                    />
+                  </motion.div>
                 )}
-                strokeWidth={3}
-              />
+              </AnimatePresence>
             </Button>
           )}
         </div>
