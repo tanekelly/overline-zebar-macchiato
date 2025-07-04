@@ -96,7 +96,7 @@ const getWindowTitle = (glazewm: GlazeWmOutput): string | null => {
 
   // If the focused container is not a window, use workspace name matching logic
   const { appNames: workspaceApps, processNames: workspaceProcesses } = extractProcessesFromWorkspace(focusedWorkspace);
-  const customWorkspaceName = getWorkspaceNameFromProcesses(workspaceApps, workspaceProcesses);
+  const customWorkspaceName = getWorkspaceNameFromProcesses(workspaceApps, workspaceProcesses, focusedWorkspace.name);
   const focusedWorkspaceDisplayName = customWorkspaceName ?? focusedWorkspace.displayName ?? `Workspace ${focusedWorkspace.name}`;
   return focusedWorkspaceDisplayName;
 };

@@ -61,7 +61,7 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
           const { appNames: workspaceApps, processNames: workspaceProcesses } = extractProcessesFromWorkspace(workspace);
           
           // Get custom workspace name based on processes
-          const customWorkspaceName = getWorkspaceNameFromProcesses(workspaceApps, workspaceProcesses);
+          const customWorkspaceName = getWorkspaceNameFromProcesses(workspaceApps, workspaceProcesses, workspace.name);
           
           // Use custom name if available, otherwise fall back to displayName or name
           const displayName = customWorkspaceName ?? workspace.displayName ?? workspace.name;

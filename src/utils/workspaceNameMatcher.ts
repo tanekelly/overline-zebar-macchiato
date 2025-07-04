@@ -33,7 +33,7 @@ const WORKSPACE_NAME_MATCHES: WorkspaceNameMatch[] = [
     name: "Datagrip"
   },
   {
-    processes: ["steamwebhelper", "steamwebhelper"],
+    processes: ["steamwebhelper"],
     name: "Steam"
   }
 ];
@@ -42,9 +42,10 @@ const WORKSPACE_NAME_MATCHES: WorkspaceNameMatch[] = [
  * Get the custom workspace name based on the apps running in the workspace
  * @param workspaceApps - Array of app names running in the workspace
  * @param workspaceProcesses - Array of original process names (for matching)
- * @returns Custom workspace name if a match is found, single app name if only one app, null otherwise
+ * @param workspaceNumber - The workspace number to use as fallback
+ * @returns Custom workspace name if a match is found, single app name if only one app, workspace number if multiple apps, null otherwise
  */
-export function getWorkspaceNameFromProcesses(workspaceApps: string[], workspaceProcesses: string[] = []): string | null {
+export function getWorkspaceNameFromProcesses(workspaceApps: string[], workspaceProcesses: string[] = [], workspaceNumber?: string): string | null {
   // Convert process names to lowercase for case-insensitive matching
   const normalizedProcesses = workspaceProcesses.map(p => p.toLowerCase());
   
@@ -59,14 +60,36 @@ export function getWorkspaceNameFromProcesses(workspaceApps: string[], workspace
       )
     );
     
-    if (allProcessesPresent) {
+    // Also check that there are no extra processes (exact match)
+    const noExtraProcesses = normalizedProcesses.every(workspaceProcess => 
+      matchProcesses.some(process => 
+        workspaceProcess.includes(process) || process.includes(workspaceProcess)
+      )
+    );
+    
+    if (allProcessesPresent && noExtraProcesses) {
       return match.name;
     }
   }
   
-  // If no matches found and only one app is running, use that as the workspace name
+  // If no matches found and only one app is running, use that app name (from title)
   if (workspaceApps.length === 1) {
     return workspaceApps[0];
+  }
+  
+  // If no matches found and only one process is running, use that process name
+  if (workspaceProcesses.length === 1) {
+    return workspaceProcesses[0];
+  }
+  
+  // If multiple processes, return the workspace number or count as fallback
+  if (workspaceProcesses.length > 1) {
+    return workspaceNumber || workspaceProcesses.length.toString();
+  }
+  
+  // Fallback: if multiple app names, return the workspace number or count
+  if (workspaceApps.length > 1) {
+    return workspaceNumber || workspaceApps.length.toString();
   }
   
   return null;
@@ -112,26 +135,26 @@ function extractAppNameFromTitle(title: string): string {
  * @returns Object containing app names and process names running in the workspace
  */
 export function extractProcessesFromWorkspace(workspace: any): { appNames: string[], processNames: string[] } {
-  const appNames: string[] = [];
-  const processNames: string[] = [];
+  const appNamesSet = new Set<string>();
+  const processNamesSet = new Set<string>();
   
   if (workspace && typeof workspace === 'object') {
     // Recursive function to extract app names from containers
     const extractFromContainer = (container: any) => {
       // Always collect process name for matching
       if (container.processName) {
-        processNames.push(container.processName);
+        processNamesSet.add(container.processName);
       }
       
       // Use title if available, fallback to processName for display
       if (container.title) {
         const appName = extractAppNameFromTitle(container.title);
         if (appName) {
-          appNames.push(appName);
+          appNamesSet.add(appName);
         }
       } else if (container.processName) {
         // Fallback to processName if no title
-        appNames.push(container.processName);
+        appNamesSet.add(container.processName);
       }
       
       // Check if container has children and recursively process them
@@ -146,15 +169,15 @@ export function extractProcessesFromWorkspace(workspace: any): { appNames: strin
     if (workspace.windows && Array.isArray(workspace.windows)) {
       workspace.windows.forEach((window: any) => {
         if (window.processName) {
-          processNames.push(window.processName);
+          processNamesSet.add(window.processName);
         }
         if (window.title) {
           const appName = extractAppNameFromTitle(window.title);
           if (appName) {
-            appNames.push(appName);
+            appNamesSet.add(appName);
           }
         } else if (window.processName) {
-          appNames.push(window.processName);
+          appNamesSet.add(window.processName);
         }
       });
     }
@@ -175,17 +198,20 @@ export function extractProcessesFromWorkspace(workspace: any): { appNames: strin
     
     // Check if workspace has a direct title or processName property
     if (workspace.processName) {
-      processNames.push(workspace.processName);
+      processNamesSet.add(workspace.processName);
     }
     if (workspace.title) {
       const appName = extractAppNameFromTitle(workspace.title);
       if (appName) {
-        appNames.push(appName);
+        appNamesSet.add(appName);
       }
     } else if (workspace.processName) {
-      appNames.push(workspace.processName);
+      appNamesSet.add(workspace.processName);
     }
   }
   
-  return { appNames, processNames };
+  return { 
+    appNames: Array.from(appNamesSet), 
+    processNames: Array.from(processNamesSet) 
+  };
 } 
