@@ -11,11 +11,21 @@ enum WindowType {
 }
 
 export const Floating = ({ glazewm }: CommandProps) => {
+  // Safety check for glazewm and focusedContainer structure
+  if (!glazewm?.focusedContainer) {
+    return null; // Don't render the button if we don't have a focused container
+  }
+
+  // Type assertion to handle runtime data structure that includes state
+  const containerWithState = glazewm.focusedContainer as any;
+  if (!containerWithState.state) {
+    return null; // Don't render if no state property
+  }
+
   const tooltipText = "Toggle fullscreen state of window";
-  const isFloating =
-    glazewm?.focusedContainer.state.type === WindowType.FLOATING;
+  const isFloating = containerWithState.state.type === WindowType.FLOATING;
   const command = isFloating ? "set-tiling" : "set-floating";
-  console.log(glazewm?.focusedContainer.state.type);
+  console.log(containerWithState.state.type);
 
   return (
     <IconButton

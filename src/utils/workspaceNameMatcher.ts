@@ -138,76 +138,79 @@ export function extractProcessesFromWorkspace(workspace: any): { appNames: strin
   const appNamesSet = new Set<string>();
   const processNamesSet = new Set<string>();
   
-  if (workspace && typeof workspace === 'object') {
-    // Recursive function to extract app names from containers
-    const extractFromContainer = (container: any) => {
-      // Always collect process name for matching
-      if (container.processName) {
-        processNamesSet.add(container.processName);
-      }
-      
-      // Use title if available, fallback to processName for display
-      if (container.title) {
-        const appName = extractAppNameFromTitle(container.title);
-        if (appName) {
-          appNamesSet.add(appName);
-        }
-      } else if (container.processName) {
-        // Fallback to processName if no title
-        appNamesSet.add(container.processName);
-      }
-      
-      // Check if container has children and recursively process them
-      if (container.children && Array.isArray(container.children)) {
-        container.children.forEach((child: any) => {
-          extractFromContainer(child);
-        });
-      }
-    };
-    
-    // Check if workspace has windows property
-    if (workspace.windows && Array.isArray(workspace.windows)) {
-      workspace.windows.forEach((window: any) => {
-        if (window.processName) {
-          processNamesSet.add(window.processName);
-        }
-        if (window.title) {
-          const appName = extractAppNameFromTitle(window.title);
-          if (appName) {
-            appNamesSet.add(appName);
-          }
-        } else if (window.processName) {
-          appNamesSet.add(window.processName);
-        }
-      });
+  // Safety check for workspace
+  if (!workspace || typeof workspace !== 'object') {
+    return { appNames: [], processNames: [] };
+  }
+
+  // Recursive function to extract app names from containers
+  const extractFromContainer = (container: any) => {
+    // Always collect process name for matching
+    if (container.processName) {
+      processNamesSet.add(container.processName);
     }
     
-    // Check if workspace has containers property
-    if (workspace.containers && Array.isArray(workspace.containers)) {
-      workspace.containers.forEach((container: any) => {
-        extractFromContainer(container);
-      });
-    }
-    
-    // Check if workspace has children property (workspace tree structure)
-    if (workspace.children && Array.isArray(workspace.children)) {
-      workspace.children.forEach((child: any) => {
-        extractFromContainer(child);
-      });
-    }
-    
-    // Check if workspace has a direct title or processName property
-    if (workspace.processName) {
-      processNamesSet.add(workspace.processName);
-    }
-    if (workspace.title) {
-      const appName = extractAppNameFromTitle(workspace.title);
+    // Use title if available, fallback to processName for display
+    if (container.title) {
+      const appName = extractAppNameFromTitle(container.title);
       if (appName) {
         appNamesSet.add(appName);
       }
-    } else if (workspace.processName) {
-      appNamesSet.add(workspace.processName);
+    } else if (container.processName) {
+      // Fallback to processName if no title
+      appNamesSet.add(container.processName);
     }
+    
+    // Check if container has children and recursively process them
+    if (container.children && Array.isArray(container.children)) {
+      container.children.forEach((child: any) => {
+        extractFromContainer(child);
+      });
+    }
+  };
+  
+  // Check if workspace has windows property
+  if (workspace.windows && Array.isArray(workspace.windows)) {
+    workspace.windows.forEach((window: any) => {
+      if (window.processName) {
+        processNamesSet.add(window.processName);
+      }
+      if (window.title) {
+        const appName = extractAppNameFromTitle(window.title);
+        if (appName) {
+          appNamesSet.add(appName);
+        }
+      } else if (window.processName) {
+        appNamesSet.add(window.processName);
+      }
+    });
+  }
+  
+  // Check if workspace has containers property
+  if (workspace.containers && Array.isArray(workspace.containers)) {
+    workspace.containers.forEach((container: any) => {
+      extractFromContainer(container);
+    });
+  }
+  
+  // Check if workspace has children property (workspace tree structure)
+  if (workspace.children && Array.isArray(workspace.children)) {
+    workspace.children.forEach((child: any) => {
+      extractFromContainer(child);
+    });
+  }
+  
+  // Check if workspace has a direct title or processName property
+  if (workspace.processName) {
+    processNamesSet.add(workspace.processName);
+  }
+  if (workspace.title) {
+    const appName = extractAppNameFromTitle(workspace.title);
+    if (appName) {
+      appNamesSet.add(appName);
+    }
+  } else if (workspace.processName) {
+    appNamesSet.add(workspace.processName);
   }
   
   return { 

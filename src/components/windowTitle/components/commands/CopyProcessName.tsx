@@ -20,20 +20,28 @@ export const CopyProcessName = ({ glazewm }: CommandProps) => {
   const tooltipText = "Copy process name of the window";
   const [copying, setCopying] = useState(false);
 
+  // Safety check - don't render if no valid glazewm data
+  if (!glazewm) {
+    return null;
+  }
+
+  // Check if there's actually a process name to copy
+  const processName = getWindowProcess(glazewm);
+  if (!processName) {
+    return null; // Don't render the button if there's no process name
+  }
+
   const handleCopyProcessName = () => {
-    const processName = getWindowProcess(glazewm);
-    if (processName) {
-      navigator.clipboard
-        .writeText(processName)
-        .then(() => {
-          console.log(`Copied to clipboard: ${processName}`);
-          setCopying(true);
-          setTimeout(() => setCopying(false), 750);
-        })
-        .catch((err) => {
-          console.error("Failed to copy text to clipboard:", err);
-        });
-    }
+    navigator.clipboard
+      .writeText(processName)
+      .then(() => {
+        console.log(`Copied to clipboard: ${processName}`);
+        setCopying(true);
+        setTimeout(() => setCopying(false), 750);
+      })
+      .catch((err) => {
+        console.error("Failed to copy text to clipboard:", err);
+      });
   };
 
   return (

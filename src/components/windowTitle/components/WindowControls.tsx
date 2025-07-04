@@ -15,6 +15,17 @@ interface WindowControlsProps {
 export function WindowControls({ glazewm, ...props }: WindowControlsProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
 
+  // Safety check - don't render controls if no valid glazewm data
+  if (!glazewm) {
+    return null;
+  }
+
+  // Check if there are any valid controls to show
+  const controlList = <ControlList glazewm={glazewm} />;
+  if (!controlList) {
+    return null; // Don't render anything if no valid controls
+  }
+
   return (
     <ConditionalPanel sessionActive={props.show}>
       <Chip
@@ -25,7 +36,7 @@ export function WindowControls({ glazewm, ...props }: WindowControlsProps) {
           e.stopPropagation();
         }}
       >
-        <ControlList glazewm={glazewm} />
+        {controlList}
       </Chip>
     </ConditionalPanel>
   );
@@ -39,13 +50,26 @@ export function WindowControls({ glazewm, ...props }: WindowControlsProps) {
  * I am currently avoiding tracking any state locally and then replicating it to GlazeWM, as it could cause desync issues.
  */
 const ControlList = ({ glazewm }: { glazewm: GlazeWmOutput | null }) => {
+  // Safety check - only show controls if we have a valid focused container
+  if (!glazewm?.focusedContainer) {
+    return null;
+  }
+
   const controls = [CopyProcessName, ToggleFloating];
+
+  // Filter out controls that return null (no valid state to show)
+  const validControls = controls
+    .map(Control => <Control key={Control.name} glazewm={glazewm} />)
+    .filter(control => control !== null);
+
+  // If no valid controls, return null
+  if (validControls.length === 0) {
+    return null;
+  }
 
   return (
     <div className="flex items-center gap-1.5">
-      {controls.map((Control, idx) => (
-        <Control key={idx} glazewm={glazewm} />
-      ))}
+      {validControls}
     </div>
   );
 };
