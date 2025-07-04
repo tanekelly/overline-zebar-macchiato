@@ -13,6 +13,9 @@ import "./styles/fonts.css";
 import { useAutoTiling } from "./utils/useAutoTiling";
 import { getWeatherIcon } from "./utils/weatherIcons";
 import Systray from "./components/systray";
+import { ChevronRight } from "lucide-react";
+import { cn } from "./utils/cn";
+import { Button } from "./components/common/Button";
 
 const providers = zebar.createProviderGroup({
   media: { type: "media" },
@@ -58,6 +61,19 @@ function App() {
       </div>
 
       <div className="flex gap-2 items-center h-full z-10">
+        <div className="flex items-center h-full">
+          {output.glazewm && (
+            <Button onClick={() => output.glazewm?.runCommand("toggle-tiling-direction")}>
+              <ChevronRight
+                className={cn(
+                  "h-3 w-3 transition-transform duration-200 ease-in-out",
+                  output.glazewm.tilingDirection === "vertical" ? "rotate-90" : ""
+                )}
+                strokeWidth={3}
+              />
+            </Button>
+          )}
+        </div>
         <div className="flex items-center h-full">
           {/* TODO: Extract to component */}
           <Chip
