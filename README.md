@@ -1,7 +1,7 @@
 # overline-zebar
 
 A fork of overline-zebar with a macchiato theme
-![Screenshot of overline-zebar in use with GlazeWM](https://github.com/user-attachments/assets/00499a01-e937-493f-8a46-4e0e324dc75f)
+![Screenshot of overline-zebar in use with GlazeWM](https://github.com/user-attachments/assets/c33c025d-905e-4be3-a209-3535e113d3c3)
 
 ## Features
 
