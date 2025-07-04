@@ -1,8 +1,7 @@
 # overline-zebar
 
-A fully featured custom widget for [Zebar](https://github.com/glzr-io/zebar).
-
-![Screenshot of overline-zebar in use with GlazeWM, Zen Browser underneath](https://github.com/user-attachments/assets/333feb9c-225d-4be9-84db-cbdc7010e698)
+A fork of overline-zebar with a macchiato theme
+![Screenshot of overline-zebar in use with GlazeWM](https://github.com/user-attachments/assets/00499a01-e937-493f-8a46-4e0e324dc75f)
 
 ## Features
 
@@ -28,15 +27,6 @@ A fully featured custom widget for [Zebar](https://github.com/glzr-io/zebar).
 ---
 
 ## Installation
-
-**For releases older than Zebar v3, refer to [this branch](https://github.com/mushfikurr/overline-zebar/tree/old/zebar-v2).**
-
-Note: If you have local branches from the older branch, the layout has changed:
-
-```
-main -> old/zebar-v2  
-migrate/zebar-v3 -> main
-```
 
 ### Option 1: The Zebar Marketplace
 
