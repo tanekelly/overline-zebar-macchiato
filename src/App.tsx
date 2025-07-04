@@ -59,7 +59,10 @@ function App() {
 
   return (
     <div className="relative flex justify-between items-center bg-background/80 border border-button-border/80 backdrop-blur-3xl text-text h-full antialiased select-none font-mono py-1.5">
-      <div className="flex items-center gap-2 h-full z-10 pl-1.5">
+      <div className={cn(
+        "flex items-center gap-2 h-full z-10 pl-1.5",
+        isGlazewmPaused && "opacity-50"
+      )}>
         <div className="flex items-center gap-1.5 h-full">
           <TilingControl glazewm={output.glazewm} />
         </div>
@@ -71,13 +74,19 @@ function App() {
         </div>
       </div>
 
-      <div className="absolute w-full h-full flex items-center justify-center left-0">
+      <div className={cn(
+        "absolute w-full h-full flex items-center justify-center left-0",
+        isGlazewmPaused && "opacity-50"
+      )}>
         <Center>
           <WindowTitle glazewm={output.glazewm} />
         </Center>
       </div>
 
-      <div className="flex gap-2 items-center h-full z-10">
+      <div className={cn(
+        "flex gap-2 items-center h-full z-10",
+        isGlazewmPaused && "opacity-50"
+      )}>
         <div className="flex items-center h-full">
           {output.glazewm && (
             <Button onClick={() => output.glazewm?.runCommand("toggle-tiling-direction")}>
@@ -140,16 +149,26 @@ function App() {
                 type="ring"
               />
             )}
+          </Chip>
+        </div>
 
-            {output.weather && (
+        <div className="flex items-center h-full">
+          {output.weather && (
+            <Chip
+              className="flex items-center gap-3 h-full"
+              as="button"
+              onClick={() => {
+                output.glazewm?.runCommand("shell-exec cmd /c start chrome --new-window https://www.windy.com");
+              }}
+            >
               <Stat
                 Icon={getWeatherIcon(output.weather, statIconClassnames)}
                 stat={`${Math.round(output.weather.celsiusTemp)}°C`}
                 threshold={weatherThresholds}
                 type="inline"
               />
-            )}
-          </Chip>
+            </Chip>
+          )}
         </div>
 
         <div className="flex items-center h-full">
