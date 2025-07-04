@@ -22,7 +22,7 @@ const providers = zebar.createProviderGroup({
   network: { type: "network" },
   glazewm: { type: "glazewm" },
   cpu: { type: "cpu" },
-  date: { type: "date", formatting: "EEE d MMM t", locale: "en-GB" },
+  date: { type: "date", formatting: "EEE d MMM h:mm a", locale: "en-GB" },
   memory: { type: "memory" },
   weather: { type: "weather" },
   audio: { type: "audio" },
@@ -129,8 +129,9 @@ function App() {
               weekday: "short", // EEE
               day: "numeric", // d
               month: "short", // MMM
-              hour: "numeric", // t (hour part)
-              minute: "numeric", // t (minute part)
+              hour: "numeric", // h
+              minute: "numeric", // mm
+              hour12: true, // a (AM/PM)
             })
               .format(new Date())
               .replace(/,/g, "")}
