@@ -5,6 +5,7 @@ import { GlazeWmOutput } from "zebar";
 import { cn } from "../utils/cn";
 import { buttonStyles } from "./common/Button";
 import { Chip } from "./common/Chip";
+import { getWorkspaceNameFromProcesses, extractProcessesFromWorkspace } from "../utils/workspaceNameMatcher";
 
 type WorkspaceControlsProps = {
   glazewm: GlazeWmOutput | null;
@@ -55,6 +56,16 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
       >
         {workspaces.map((workspace: Workspace) => {
           const isFocused = workspace.hasFocus;
+          
+          // Extract processes from the workspace
+          const { appNames: workspaceApps, processNames: workspaceProcesses } = extractProcessesFromWorkspace(workspace);
+          
+          // Get custom workspace name based on processes
+          const customWorkspaceName = getWorkspaceNameFromProcesses(workspaceApps, workspaceProcesses);
+          
+          // Use custom name if available, otherwise fall back to displayName or name
+          const displayName = customWorkspaceName ?? workspace.displayName ?? workspace.name;
+          
           return (
             <button
               key={workspace.name}
@@ -62,7 +73,7 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
                 glazewm.runCommand(`focus --workspace ${workspace.name}`)
               }
               className={cn(
-                "relative rounded-xl px-2 transition duration-500 ease-in-out text-text-muted h-full",
+                "relative rounded-xl px-2 transition duration-500 ease-in-out text-text-muted h-full max-w-[120px]",
                 isFocused ? "" : "hover:text-text",
                 isFocused &&
                 "text-text duration-700 transition-all ease-in-out font-medium"
@@ -71,8 +82,8 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
                 WebkitTapHighlightColor: "transparent",
               }}
             >
-              <p className={cn("z-10")}>
-                {workspace.displayName ?? workspace.name}
+              <p className={cn("z-10 whitespace-nowrap overflow-hidden text-ellipsis")}>
+                {displayName}
               </p>
 
               {isFocused && (
