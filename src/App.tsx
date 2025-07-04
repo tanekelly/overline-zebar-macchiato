@@ -161,9 +161,9 @@ function App() {
         </div>
 
 
-        <div className="h-full flex items-center px-0.5 pr-1">
+        {/* <div className="h-full flex items-center px-0.5 pr-1">
           <Systray systray={output.systray} />
-        </div>
+        </div> */}
 
         <div className="h-full flex items-center justify-center pr-2">
           {output?.date?.formatted ??
