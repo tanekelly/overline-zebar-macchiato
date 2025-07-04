@@ -31,7 +31,7 @@ export function TilingControl({ glazewm }: TilingControlProps) {
         ))}
       </AnimatePresence>
 
-      <Button
+      {/* <Button
         onClick={() => {
           if (flowLauncherPath && !isLoading) {
             console.log("Flow Launcher path:", flowLauncherPath);
@@ -44,7 +44,7 @@ export function TilingControl({ glazewm }: TilingControlProps) {
         }}
       >
         <Search strokeWidth={3} className="h-3 w-3" />
-      </Button>
+      </Button> */}
 
       <Button onClick={() => glazewm.runCommand("toggle-tiling-direction")}>
         <ChevronRight
