@@ -54,7 +54,7 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
         ref={ref}
         onWheel={handleWheel}
       >
-        {workspaces.map((workspace: Workspace) => {
+        {workspaces.map((workspace: Workspace, index: number) => {
           const isFocused = workspace.hasFocus;
           
           // Extract processes from the workspace
@@ -67,37 +67,43 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
           const displayName = customWorkspaceName ?? workspace.displayName ?? workspace.name;
           
           return (
-            <button
-              key={workspace.name}
-              onClick={() =>
-                glazewm.runCommand(`focus --workspace ${workspace.name}`)
-              }
-              className={cn(
-                "relative rounded-xl px-2 transition duration-500 ease-in-out text-text-muted h-full max-w-[120px]",
-                isFocused ? "" : "hover:text-text",
-                isFocused &&
-                "text-text duration-700 transition-all ease-in-out font-medium"
-              )}
-              style={{
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              <p className={cn("z-10 whitespace-nowrap overflow-hidden text-ellipsis")}>
-                {displayName}
-              </p>
+            <div key={workspace.name} className="flex items-center">
+              <button
+                onClick={() =>
+                  glazewm.runCommand(`focus --workspace ${workspace.name}`)
+                }
+                className={cn(
+                  "relative rounded-xl px-2 transition duration-500 ease-in-out text-text-muted h-full max-w-[120px]",
+                  isFocused ? "" : "hover:text-text",
+                  isFocused &&
+                  "text-text duration-700 transition-all ease-in-out font-medium"
+                )}
+                style={{
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                <p className={cn("z-10 whitespace-nowrap overflow-hidden text-ellipsis")}>
+                  {displayName}
+                </p>
 
-              {isFocused && (
-                <motion.span
-                  layoutId="bubble"
-                  className={cn(
-                    buttonStyles,
-                    "bg-primary border-primary-border drop-shadow-sm rounded-[0.5rem] absolute inset-0 -z-10",
-                    isFocused && "hover:bg-primary"
-                  )}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
+                {isFocused && (
+                  <motion.span
+                    layoutId="bubble"
+                    className={cn(
+                      buttonStyles,
+                      "bg-primary border-primary-border drop-shadow-sm rounded-[0.5rem] absolute inset-0 -z-10",
+                      isFocused && "hover:bg-primary"
+                    )}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </button>
+              
+              {/* Add separator between workspaces (except after the last one) */}
+              {index < workspaces.length - 1 && (
+                <div className="w-px h-4 bg-border/30 mx-1" />
               )}
-            </button>
+            </div>
           );
         })}
       </Chip>
