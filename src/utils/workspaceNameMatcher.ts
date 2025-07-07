@@ -35,6 +35,10 @@ const WORKSPACE_NAME_MATCHES: WorkspaceNameMatch[] = [
   {
     processes: ["steamwebhelper"],
     name: "Steam"
+  },
+  {
+    processes: ["Docker Desktop"],
+    name: "Docker"
   }
 ];
 
