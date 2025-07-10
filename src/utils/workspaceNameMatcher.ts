@@ -72,18 +72,32 @@ export function getWorkspaceNameFromProcesses(workspaceApps: string[], workspace
     );
     
     if (allProcessesPresent && noExtraProcesses) {
+      // Include workspace number if available and different from the match name
+      if (workspaceNumber && workspaceNumber !== match.name) {
+        return `${workspaceNumber}: ${match.name}`;
+      }
       return match.name;
     }
   }
   
   // If no matches found and only one app is running, use that app name (from title)
   if (workspaceApps.length === 1) {
-    return workspaceApps[0];
+    const appName = workspaceApps[0];
+    // Include workspace number if available and different from the app name
+    if (workspaceNumber && workspaceNumber !== appName) {
+      return `${workspaceNumber}: ${appName}`;
+    }
+    return appName;
   }
   
   // If no matches found and only one process is running, use that process name
   if (workspaceProcesses.length === 1) {
-    return workspaceProcesses[0];
+    const processName = workspaceProcesses[0];
+    // Include workspace number if available and different from the process name
+    if (workspaceNumber && workspaceNumber !== processName) {
+      return `${workspaceNumber}: ${processName}`;
+    }
+    return processName;
   }
   
   // If multiple processes, return the workspace number or count as fallback
