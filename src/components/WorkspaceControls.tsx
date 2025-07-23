@@ -73,7 +73,7 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
                   glazewm.runCommand(`focus --workspace ${workspace.name}`)
                 }
                 className={cn(
-                  "relative rounded-xl px-2 transition duration-500 ease-in-out text-text-muted h-full max-w-[120px]",
+                  "relative rounded-xl px-1.5 transition duration-500 ease-in-out text-text-muted h-full max-w-[120px]",
                   isFocused ? "" : "hover:text-text",
                   isFocused &&
                   "text-text duration-700 transition-all ease-in-out font-medium"
@@ -91,7 +91,7 @@ export function WorkspaceControls({ glazewm }: WorkspaceControlsProps) {
                     layoutId="bubble"
                     className={cn(
                       buttonStyles,
-                      "bg-primary border-primary-border drop-shadow-sm rounded-[0.5rem] absolute inset-0 -z-10",
+                      "bg-primary border-primary-border drop-shadow-sm rounded-xl absolute inset-0 -z-10",
                       isFocused && "hover:bg-primary"
                     )}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
