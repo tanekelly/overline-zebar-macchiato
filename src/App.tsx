@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as zebar from "zebar";
 import { Center } from "./components/Center";
 import { Chip } from "./components/common/Chip";
@@ -17,6 +17,7 @@ import { ChevronRight, Pause } from "lucide-react";
 import { cn } from "./utils/cn";
 import { Button } from "./components/common/Button";
 import { motion, AnimatePresence } from "framer-motion";
+import BatteryComponent from "./components/battery";
 
 const providers = zebar.createProviderGroup({
   media: { type: "media" },
@@ -28,6 +29,7 @@ const providers = zebar.createProviderGroup({
   weather: { type: "weather" },
   audio: { type: "audio" },
   systray: { type: "systray" },
+  battery: { type: "battery" },
 });
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
   useEffect(() => {
     providers.onOutput(() => setOutput(providers.outputMap));
   }, []);
+
+
 
   useAutoTiling();
 
@@ -56,6 +60,17 @@ function App() {
     console.log("All glazewm properties:", Object.keys(output.glazewm));
     console.log("Full glazewm output:", output.glazewm);
   }
+
+  // Debug logging for battery updates
+  React.useEffect(() => {
+    if (output.battery) {
+      console.log("Battery output changed:", {
+        chargePercent: output.battery.chargePercent,
+        isCharging: output.battery.isCharging,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, [output.battery?.chargePercent, output.battery?.isCharging]);
 
   return (
     <div className="relative flex justify-between items-center bg-background/80 border border-button-border/80 backdrop-blur-3xl text-text h-full antialiased select-none font-mono py-1.5">
@@ -179,6 +194,12 @@ function App() {
           />
         </div>
 
+        <div className="flex items-center h-full">
+          <BatteryComponent 
+            key={`battery-${output.battery?.chargePercent}-${output.battery?.isCharging}`}
+            battery={output.battery} 
+          />
+        </div>
 
         {/* <div className="h-full flex items-center px-0.5 pr-1">
           <Systray systray={output.systray} />
